@@ -12,7 +12,7 @@ class DeliveryDetail(models.Model):
     # ------------------------------------------------------
     # ACTIONS
     # ------------------------------------------------------
-    
+
     def action_mass_mark_as_invoiced(self):
         """
         Acción masiva para marcar múltiples registros como facturados
@@ -133,6 +133,12 @@ class DeliveryDetail(models.Model):
                     'uom_id': move.product_uom,
                 }
             grouped_moves[key]['qty'] += move.quantity_done
+            # Recopilar lotes y números de serie
+            for move_line in move.move_line_ids:
+                if move_line.lot_id:
+                    lot_name = move_line.lot_id.name
+                    if lot_name not in grouped_moves[key]['lot_serial_numbers']:
+                        grouped_moves[key]['lot_serial_numbers'].append(lot_name)
         
         # Crear líneas de detalle
         for group_data in grouped_moves.values():

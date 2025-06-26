@@ -8,11 +8,12 @@
         <xpath expr="//div[@class='page']" position="inside">
             <div class="row" t-if="o.move_type == 'out_invoice' and o.delivery_detail_ids">
                 <div class="col-12">
+                    
+                    <!-- Tabla de cantidades y unidades de medida -->
                     <h4 style="margin-top: 30px; margin-bottom: 15px; font-weight: bold; border-bottom: 1px solid #000; padding-bottom: 5px;">
                         Detalle de Entrega
                     </h4>
                     
-                    <!-- Tabla de resumen por cantidad y unidad de medida -->
                     <table class="table table-sm table-bordered" style="margin-bottom: 20px; width: 50%;">
                         <thead style="background-color: #f8f9fa;">
                             <tr>
@@ -34,6 +35,36 @@
                             </t>
                         </tbody>
                     </table>
+
+                    <!-- Tabla de lotes y números de serie -->
+                    <t t-set="delivery_lots" t-value="o._get_delivery_lots_data()"/>
+                    <div t-if="delivery_lots" style="margin-top: 20px;">
+                        <h4 style="margin-bottom: 15px; font-weight: bold; border-bottom: 1px solid #000; padding-bottom: 5px;">
+                            Lotes y Números de Serie Entregados
+                        </h4>
+                        
+                        <table class="table table-sm table-bordered" style="margin-bottom: 20px; width: 70%;">
+                            <thead style="background-color: #f8f9fa;">
+                                <tr>
+                                    <th style="text-align: left; padding: 10px; font-weight: bold; border: 1px solid #000;">Producto</th>
+                                    <th style="text-align: left; padding: 10px; font-weight: bold; border: 1px solid #000;">Lotes / Números de Serie</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="delivery_lots" t-as="lot_line">
+                                    <tr>
+                                        <td style="padding: 8px; border: 1px solid #000; vertical-align: top;">
+                                            <span t-esc="lot_line['product_name']"/>
+                                        </td>
+                                        <td style="padding: 8px; border: 1px solid #000; vertical-align: top;">
+                                            <span t-esc="lot_line['lot_serial_numbers']"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                    
                 </div>
             </div>
         </xpath>

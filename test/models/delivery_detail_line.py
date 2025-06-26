@@ -57,3 +57,8 @@ class DeliveryDetailLine(models.Model):
         string='Unidad de Medida',
         readonly=True,
     )
+    lot_serial_numbers = fields.Text(
+        string='Lotes/Números de Serie',
+        readonly=True,
+        help='Lotes y números de serie entregados para este producto',
+    )

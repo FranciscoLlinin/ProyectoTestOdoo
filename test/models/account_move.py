@@ -95,6 +95,26 @@ class AccountMove(models.Model):
         
         return summary_data
     
+    def _get_delivery_lots_data(self):
+        """
+        Método para obtener los datos de lotes y números de serie para reportes
+        """
+        # Crear detalles si no existen
+        if not self.delivery_detail_ids:
+            self.env['delivery.detail'].create_delivery_details(self.id)
+        
+        delivery_details = self.delivery_detail_ids
+        lots_data = []
+        
+        for detail in delivery_details:
+            for line in detail.delivery_detail_line_ids:
+                if line.lot_serial_numbers:  # Solo agregar si tiene lotes/series
+                    lots_data.append({
+                        'product_name': line.product_name or 'Sin nombre',
+                        'lot_serial_numbers': line.lot_serial_numbers,
+                    })
+        
+        return lots_data
     # ------------------------------------------------------
     # VARIABLES
     # ------------------------------------------------------
