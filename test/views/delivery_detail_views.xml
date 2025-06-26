@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="" model="ir.ui.view">
+        <field name="name"></field>
+        <field name="model">delivery.detail</field>
+
+        <field name="arch" type="xml">
+
+        </field>
+    </record>
+
+    <record id="" model="ir.ui.view">
+        <field name="name"></field>
+        <field name="model">delivery.detail</field>
+        <field name="arch" type="xml">
+
+        </field>
+    </record>
+
+    <record id="" model="ir.actions.server">
+		<field name="name"></field>
+		<field name="state">code</field>
+		<field name="type">ir.actions.server</field>
+		<field name="model_id" ref=""/>
+		<field name="binding_model_id" ref=""/>
+		<field name="binding_view_types"></field>
+		<field name="code">
+
+        </field>
+    </record>
+</odoo>
