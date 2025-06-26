@@ -48,6 +48,7 @@ class DeliveryDetail(models.Model):
                 'message': message,
                 'type': 'success',
                 'sticky': False,
+                'next': {'type': 'ir.actions.act_window_close'},
             }
         }
     # ------------------------------------------------------
