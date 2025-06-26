@@ -63,6 +63,38 @@ class AccountMove(models.Model):
     # OTHER METHODS
     # ------------------------------------------------------
 
+    def _get_delivery_summary_data(self):
+        """
+        Método para obtener los datos de resumen de entrega para reportes
+        Agrupa por cantidad y unidad de medida
+        """
+        # Crear detalles si no existen
+        if not self.delivery_detail_ids:
+            self.env['delivery.detail'].create_delivery_details(self.id)
+        
+        delivery_details = self.delivery_detail_ids
+        summary_data = []
+        # Diccionario para agrupar por unidad de medida
+        grouped_data = {}
+        
+        for detail in delivery_details:
+            for line in detail.delivery_detail_line_ids:
+                uom_name = line.uom_id.name or 'Sin UoM'
+                
+                if uom_name in grouped_data:
+                    grouped_data[uom_name] += line.qty
+                else:
+                    grouped_data[uom_name] = line.qty
+        
+        # Convertir a lista para el template
+        for uom_name, total_qty in grouped_data.items():
+            summary_data.append({
+                'qty': total_qty,
+                'uom_name': uom_name,
+            })
+        
+        return summary_data
+    
     # ------------------------------------------------------
     # VARIABLES
     # ------------------------------------------------------
