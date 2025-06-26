@@ -6,6 +6,7 @@ from odoo.exceptions import UserError
 
 class DeliveryDetail(models.Model):
     _name = 'delivery.detail'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _description = 'Detalle de Entrega'
     _rec_name = 'picking_id'
 
@@ -100,6 +101,26 @@ class DeliveryDetail(models.Model):
         
         return delivery_details
 
+    def write(self, vals):
+        """
+        Sobrescribir write para validar cambios en el campo 'invoiced'
+        """
+        # Si se intenta cambiar el campo 'invoiced'
+        if 'invoiced' in vals:
+            if not self.env.user.has_group('test.group_delivery_detail_administrator'):
+                raise UserError(_('Solo los administradores pueden activar el campo "Facturado".\n\n'
+                                'Necesita el permiso "Verificar Detalle Entrega" para realizar esta acción.'))
+            
+            # Validar que la factura esté pagada
+            if vals['invoiced']:
+                for record in self:
+                    if record.account_move_id.payment_state != 'paid':
+                        raise UserError(_('No se puede marcar como facturado.\n\n'
+                                        'La factura %s no está totalmente pagada.\n'
+                                        'Solo se pueden marcar como facturados los detalles de facturas pagadas.') % 
+                                    record.account_move_id.name)
+        
+        return super().write(vals)
     # ------------------------------------------------------
     # COMPUTE METHODS
     # ------------------------------------------------------
