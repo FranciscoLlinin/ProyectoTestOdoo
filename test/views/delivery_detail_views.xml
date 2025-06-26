@@ -59,4 +59,26 @@
         </field>
     </record>
 
+    <!-- Menú en Contabilidad para Detalles de Entrega -->
+    <menuitem id="menu_delivery_detail_accounting"
+              name="Detalles de Entrega"
+              parent="account.menu_finance_configuration"
+              action="action_delivery_detail"
+              sequence="85"
+              groups="test.group_delivery_detail_administrator"/>
+
+    <!-- Acción de Servidor para marcar como facturado masivamente -->
+    <record id="action_mark_delivery_details_invoiced" model="ir.actions.server">
+        <field name="name">Cambiar a Facturado</field>
+        <field name="state">code</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="test.model_delivery_detail"/>
+        <field name="binding_model_id" ref="test.model_delivery_detail"/>
+        <field name="binding_view_types">list</field>
+        <field name="groups_id" eval="[(4, ref('test.group_delivery_detail_administrator'))]"/>
+        <field name="code">
+        action = records.action_mass_mark_as_invoiced()
+        </field>
+    </record>
+
 </odoo>

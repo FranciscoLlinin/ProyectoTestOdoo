@@ -1,6 +1,7 @@
 # Part of Odoo and Trescloud. See LICENSE file for full copyright and licensing details.
 
 from odoo import api, fields, models, _
+from odoo.exceptions import UserError
 
 
 class DeliveryDetail(models.Model):
@@ -11,7 +12,43 @@ class DeliveryDetail(models.Model):
     # ------------------------------------------------------
     # ACTIONS
     # ------------------------------------------------------
-
+    
+    def action_mass_mark_as_invoiced(self):
+        """
+        Acción masiva para marcar múltiples registros como facturados
+        Solo si todas las facturas asociadas están totalmente pagadas
+        """
+        # Verificar que el usuario tenga el permiso correcto
+        if not self.env.user.has_group('test.group_delivery_detail_administrator'):
+            raise UserError(_('No tiene permisos para ejecutar esta acción.'))
+        
+        # Verificar que todos los registros tengan facturas pagadas
+        unpaid_invoices = []
+        for record in self:
+            if record.account_move_id.payment_state != 'paid':
+                unpaid_invoices.append(record.account_move_id.name)
+        
+        if unpaid_invoices:
+            raise UserError(
+                _('Las siguientes facturas no están totalmente pagadas:\n%s') % 
+                '\n'.join(unpaid_invoices)
+            )
+        
+        # Si todas están pagadas, marcar como facturado
+        self.write({'invoiced': True})
+        
+        # Mensaje de confirmación
+        message = _('%d detalle(s) de entrega marcado(s) como facturado(s).') % len(self)
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('Éxito'),
+                'message': message,
+                'type': 'success',
+                'sticky': False,
+            }
+        }
     # ------------------------------------------------------
     # CRUD METHODS
     # ------------------------------------------------------
