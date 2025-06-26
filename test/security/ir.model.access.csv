@@ -1,2 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_test_model,access_test_model,model_test_model,,1,1,1,1
+access_delivery_detail_user,delivery.detail.user,test.model_delivery_detail,test.group_delivery_detail_user,1,0,1,0
+access_delivery_detail_line_user,delivery.detail.line.user,test.model_delivery_detail_line,test.group_delivery_detail_user,1,0,1,0
